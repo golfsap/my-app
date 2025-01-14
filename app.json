@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.golfsap.myapp"
     },
     "android": {
       "adaptiveIcon": {
@@ -32,10 +33,24 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+      ],
+      [
+        "react-native-auth0",
+        {
+          "domain": "dev-yg.us.auth0.com"
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "8261c068-8630-4dd1-be3b-0d211c62496c"
+      }
     }
   }
 }
