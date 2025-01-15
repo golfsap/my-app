@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Link, useRouter, useFocusEffect } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { Text, View, Pressable, StyleSheet, FlatList } from "react-native";
-import { useAuth } from "../services/auth";
+import { useAuth, getToken, clearToken } from "../services/auth";
 import NoteItem from "@/components/NoteItem";
 import {
   Profile,
@@ -25,6 +25,20 @@ export default function Index() {
 
   const { request, response, promptAsync, exchangeToken } = useAuth();
 
+  // When opening new window, if authenticated, will automatically show notes
+  useEffect(() => {
+    const checkAuth = async () => {
+      const id_token = await getToken("id_token");
+      if (id_token) {
+        setIsAuthenticated(true);
+        handleGetUserProfile();
+        handleGetUserNotes();
+      }
+    };
+
+    checkAuth();
+  }, []);
+
   useEffect(() => {
     if (response?.type === "success") {
       const { code } = response.params;
@@ -34,15 +48,15 @@ export default function Index() {
       handleGetUserNotes();
     } else if (response?.type === "error") {
       console.error("Authorization error: ", response.error);
-    } else {
-      console.log("Response dismissed or not handled: ", response?.type);
     }
   }, [response]);
 
   useFocusEffect(
     useCallback(() => {
-      handleGetUserNotes();
-    }, [])
+      if (isAuthenticated) {
+        handleGetUserNotes();
+      }
+    }, [isAuthenticated])
   );
 
   const handleGetUserProfile = async () => {
@@ -53,6 +67,14 @@ export default function Index() {
   const handleGetUserNotes = async () => {
     const userNotes = await getUserNotes();
     setNotes(userNotes);
+  };
+
+  const handleLogout = async () => {
+    await clearToken("id_token");
+    setIsAuthenticated(false);
+    setUser(null);
+    setNotes([]);
+    // const logoutUrl = `https://dev-yg.us.auth0.com/oidc/logout?id_token_hint={yourIdToken}&post_logout_redirect_uri={yourCallbackUrl}`
   };
 
   const onModalClose = () => {
@@ -70,7 +92,12 @@ export default function Index() {
     <View style={styles.container}>
       {isAuthenticated && user ? (
         <>
-          <Text style={styles.name}>{user.name}'s notes</Text>
+          <View style={styles.header}>
+            <Text style={styles.name}>{user.name}'s notes</Text>
+            <Pressable onPress={handleLogout}>
+              <Text style={styles.buttonLabel}>Log out</Text>
+            </Pressable>
+          </View>
           <FlatList
             data={notes}
             renderItem={({ item }) => (
@@ -118,6 +145,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  header: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    width: "100%",
+    // borderWidth: 1,
   },
   name: {
     fontWeight: 500,

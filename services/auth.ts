@@ -7,7 +7,7 @@ const discovery = {
   tokenEndpoint: "https://dev-yg.us.auth0.com/oauth/token",
 };
 
-const clientId = "H9F6QG5SzTKMv0tbmgxLj9LjG1EKVllA";
+// const clientId = "H9F6QG5SzTKMv0tbmgxLj9LjG1EKVllA";
 const redirectUri = AuthSession.makeRedirectUri({
   native: "com.myapp:/home",
 });
@@ -53,6 +53,8 @@ export const useAuth = () => {
       }
 
       const tokenData = await tokenResponse.json();
+      // log token response for testing:
+      // console.log(tokenData);
       await storeToken("id_token", tokenData.id_token);
     } catch (error) {
       console.error("Error during token exchange: ", error);
@@ -92,19 +94,14 @@ export const getToken = async (key: string): Promise<string | null> => {
   }
 };
 
-// Login Function
-// export const login = async (): Promise<any> => {
-//   const [request, response, promptAsync] = AuthSession.useAuthRequest(
-//     {
-//       clientId: clientId,
-//       scopes: ["openid", "profile", "email", "offline_access"],
-//       redirectUri: redirectUri,
-//       codeChallengeMethod: AuthSession.CodeChallengeMethod.S256,
-//     },
-//     discovery
-//   );
-
-//   if (response?.type === "success" && request?.codeVerifier) {
-//     return { promptAsync, codeVerifier: request.codeVerifier };
-//   }
-// };
+export const clearToken = async (key: string): Promise<void> => {
+  try {
+    if (Platform.OS === "web") {
+      localStorage.removeItem(key);
+    } else {
+      await SecureStore.deleteItemAsync(key);
+    }
+  } catch (error) {
+    console.error("Error clearing token: ", error);
+  }
+};
