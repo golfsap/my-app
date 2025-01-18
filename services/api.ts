@@ -23,7 +23,8 @@ export type Comment = {
 };
 
 export const getUserProfile = async () => {
-  const id_token = await getToken("id_token");
+  const id_token = await getToken();
+  console.log("stored token:", id_token);
   const response = await fetch("https://ctsandbox.innohub.app/profile", {
     method: "GET",
     headers: {
@@ -36,7 +37,7 @@ export const getUserProfile = async () => {
 };
 
 export const getUserNotes = async (): Promise<Note[]> => {
-  const id_token = await getToken("id_token");
+  const id_token = await getToken();
   const response = await fetch("https://ctsandbox.innohub.app/notes", {
     method: "GET",
     headers: {
@@ -53,7 +54,7 @@ export const createNote = async (
   body: string
 ): Promise<void> => {
   try {
-    const id_token = await getToken("id_token");
+    const id_token = await getToken();
     const response = await fetch("https://ctsandbox.innohub.app/notes", {
       method: "POST",
       headers: {
@@ -79,7 +80,7 @@ export const createNote = async (
 
 export const deleteNoteById = async (noteId: number): Promise<void> => {
   try {
-    const id_token = await getToken("id_token");
+    const id_token = await getToken();
     const response = await fetch(
       `https://ctsandbox.innohub.app/notes/${noteId}`,
       {
@@ -102,7 +103,7 @@ export const deleteNoteById = async (noteId: number): Promise<void> => {
 };
 
 export const getNoteById = async (noteId: number): Promise<Note> => {
-  const id_token = await getToken("id_token");
+  const id_token = await getToken();
   const response = await fetch(
     `https://ctsandbox.innohub.app/notes/${noteId}`,
     {
@@ -117,7 +118,7 @@ export const getNoteById = async (noteId: number): Promise<Note> => {
 };
 
 export const getNoteComments = async (noteId: number): Promise<Comment[]> => {
-  const id_token = await getToken("id_token");
+  const id_token = await getToken();
   const response = await fetch(
     `https://ctsandbox.innohub.app/comments?noteId=${noteId}`,
     {
@@ -132,7 +133,7 @@ export const getNoteComments = async (noteId: number): Promise<Comment[]> => {
 };
 
 export const getCommentById = async (commentId: number): Promise<Comment> => {
-  const id_token = await getToken("id_token");
+  const id_token = await getToken();
   const response = await fetch(
     `https://ctsandbox.innohub.app/comments/${commentId}`,
     {
@@ -151,7 +152,7 @@ export const createComment = async (
   body: string
 ): Promise<void> => {
   try {
-    const id_token = await getToken("id_token");
+    const id_token = await getToken();
     const response = await fetch("https://ctsandbox.innohub.app/comments", {
       method: "POST",
       headers: {
@@ -177,7 +178,7 @@ export const createComment = async (
 
 export const deleteCommentById = async (commentId: number): Promise<void> => {
   try {
-    const id_token = await getToken("id_token");
+    const id_token = await getToken();
     const response = await fetch(
       `https://ctsandbox.innohub.app/comments/${commentId}`,
       {
