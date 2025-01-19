@@ -1,7 +1,4 @@
-// import { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as AuthSession from "expo-auth-session";
 
 import { Platform } from "react-native";
@@ -93,7 +90,6 @@ export const useAuth = () => {
       console.error("Code verifier is missing");
       return;
     }
-    console.log("code verifier:", request.codeVerifier);
 
     try {
       const tokenResponse = await fetch(discovery.tokenEndpoint, {
@@ -116,7 +112,6 @@ export const useAuth = () => {
         throw new Error("Token exchange failed: ", errorData.error);
       }
       const tokenData = await tokenResponse.json();
-      console.log(tokenData);
       return tokenData.id_token;
     } catch (error) {
       console.error("Error during token exchange: ", error);
@@ -124,97 +119,3 @@ export const useAuth = () => {
   };
   return { request, response, promptAsync, exchangeToken };
 };
-
-// export const useAuth = () => {
-//   const [request, response, promptAsync] = AuthSession.useAuthRequest(
-//     authConfig,
-//     discovery
-//   );
-//   const [key, setKey] = useState(0); // Key to force remount
-
-//   const resetAuth = () => {
-//     setKey((prevKey) => prevKey + 1);
-//   };
-
-// const exchangeToken = async (code: string) => {
-//   if (!request?.codeVerifier) {
-//     console.error("Code verifier is missing");
-//     return;
-//   }
-
-//   try {
-//     const tokenResponse = await fetch(discovery.tokenEndpoint, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/x-www-form-urlencoded",
-//       },
-//       body: new URLSearchParams({
-//         client_id: authConfig.clientId,
-//         code: code,
-//         redirect_uri: redirectUri,
-//         grant_type: "authorization_code",
-//         audience: "https://dev-yg.us.auth0.com/api/v2/",
-//         code_verifier: request.codeVerifier,
-//       }).toString(),
-//     });
-
-//     if (!tokenResponse.ok) {
-//       const errorData = await tokenResponse.json();
-//       throw new Error("Token exchange failed: ", errorData.error);
-//     }
-
-//     const tokenData = await tokenResponse.json();
-//     // log token response for testing:
-//     console.log(tokenData);
-//     await storeToken("id_token", tokenData.id_token);
-//   } catch (error) {
-//     console.error("Error during token exchange: ", error);
-//   }
-// };
-
-//   return {
-//     key,
-//     request,
-//     response,
-//     promptAsync,
-//     exchangeToken,
-//     resetAuth,
-//   };
-// };
-
-// export const storeToken = async (key: string, value: string) => {
-//   try {
-//     if (Platform.OS === "web") {
-//       localStorage.setItem(key, value);
-//     } else {
-//       await SecureStore.setItemAsync(key, value);
-//     }
-//   } catch (error) {
-//     console.error(`Error storing ${key}:`, error);
-//   }
-// };
-
-// export const getToken = async (key: string): Promise<string | null> => {
-//   try {
-//     if (Platform.OS === "web") {
-//       return localStorage.getItem(key);
-//     } else {
-//       return await SecureStore.getItemAsync(key);
-//     }
-//   } catch (error) {
-//     console.error(`Error retrieving ${key}:`, error);
-//     return null;
-//   }
-// };
-
-// export const clearToken = async (key: string): Promise<void> => {
-//   try {
-//     if (Platform.OS === "web") {
-//       localStorage.removeItem(key);
-//     } else {
-//       await SecureStore.deleteItemAsync(key);
-//     }
-//   } catch (error) {
-//     console.error("Error clearing token: ", error);
-//   }
-// };
