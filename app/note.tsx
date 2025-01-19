@@ -6,6 +6,7 @@ import {
   FlatList,
   Alert,
   Platform,
+  SafeAreaView,
 } from "react-native";
 import {
   useLocalSearchParams,

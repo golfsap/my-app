@@ -6,7 +6,26 @@ export default function RootLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: "Home",
+          title: "Notes App",
+        }}
+      />
+      <Stack.Screen
+        name="loginScreen"
+        options={{
+          title: "Hello! 👋",
+        }}
+      />
+      <Stack.Screen
+        name="note"
+        options={{
+          title: "Note",
+          headerBackTitle: "Home",
+        }}
+      />
+      <Stack.Screen
+        name="comment"
+        options={{
+          title: "Comment",
         }}
       />
     </Stack>
