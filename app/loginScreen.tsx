@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { Link, useRouter, useFocusEffect } from "expo-router";
 import { useAuth, storeToken } from "../services/auth";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -10,7 +11,6 @@ export default function LoginScreen() {
   useEffect(() => {
     const handleLoginResponse = async () => {
       if (response?.type === "success") {
-        console.log("response:", response);
         const { code } = response.params;
         // Exchange authorization code for tokens
         const token = await exchangeToken(code);
@@ -24,12 +24,12 @@ export default function LoginScreen() {
   }, [response]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Welcome to the notes app!</Text>
       <Pressable style={styles.button} onPress={() => promptAsync()}>
         <Text style={styles.buttonText}>Log In</Text>
       </Pressable>
-    </View>
+    </SafeAreaView>
   );
 }
 
