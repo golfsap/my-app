@@ -7,30 +7,16 @@ interface Props {
 
 const DeleteButton = ({ onPress }: Props) => {
   return (
-    <View style={styles.buttonContainer}>
-      <Pressable style={styles.button} onPress={onPress}>
-        <Text style={styles.buttonLabel}>Delete</Text>
-      </Pressable>
-    </View>
+    <Pressable style={styles.buttonContainer} onPress={onPress}>
+      <Text style={styles.buttonLabel}>Delete</Text>
+    </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    width: 90,
-    borderWidth: 1,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    borderColor: "#FF0000",
-    borderRadius: 10,
-  },
-  button: {
-    width: "100%",
-    height: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
+    padding: 5,
+    marginRight: 10,
   },
   buttonLabel: {
     fontSize: 16,

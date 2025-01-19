@@ -9,6 +9,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import {
+  Stack,
   useLocalSearchParams,
   Link,
   useRouter,
@@ -98,10 +99,14 @@ export default function NotePage() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <Stack.Screen
+        options={{
+          headerRight: () => <DeleteButton onPress={handleDeleteNote} />,
+        }}
+      />
       <View style={styles.headerContainer}>
         <Text style={styles.title}>{note.title}</Text>
-        <DeleteButton onPress={handleDeleteNote} />
       </View>
       <Text style={styles.body}>{note.body}</Text>
       <Text style={styles.commentLabel}>Comments:</Text>
@@ -109,7 +114,6 @@ export default function NotePage() {
         data={comments}
         renderItem={({ item }) => (
           <Link
-            style={styles.commentLink}
             href={{
               pathname: "/comment",
               params: {
@@ -129,20 +133,23 @@ export default function NotePage() {
           buttonLabel="comment"
           onPress={() => setIsModalVisible(true)}
         ></CreateButton>
+
+        <CreateModal
+          isVisible={isModalVisible}
+          modalType="comment"
+          onClose={onModalClose}
+          onAdd={onAddComment}
+        ></CreateModal>
       </View>
-      <CreateModal
-        isVisible={isModalVisible}
-        modalType="comment"
-        onClose={onModalClose}
-        onAdd={onAddComment}
-      ></CreateModal>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   headerContainer: {
@@ -165,10 +172,11 @@ const styles = StyleSheet.create({
     color: "#666",
     marginBottom: 10,
   },
-  listContainer: {},
   buttonContainer: {
     alignItems: "center",
+    // marginBottom: 20,
   },
-  error: {},
-  commentLink: {},
+  listContainer: {
+    paddingBottom: 30,
+  },
 });

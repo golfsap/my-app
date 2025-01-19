@@ -10,7 +10,7 @@ const CreateButton = ({ buttonLabel, onPress }: Props) => {
   return (
     <View style={styles.buttonContainer}>
       <Pressable style={styles.button} onPress={onPress}>
-        <Text style={styles.buttonLabel}>Create a new {buttonLabel}</Text>
+        <Text style={styles.buttonLabel}>+</Text>
       </Pressable>
     </View>
   );
@@ -18,26 +18,27 @@ const CreateButton = ({ buttonLabel, onPress }: Props) => {
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    width: 170,
-    height: 60,
-    marginHorizontal: 20,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 3,
-    // borderWidth: 1,
+    position: "absolute",
+    bottom: 20,
+    left: 120,
   },
   button: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    // borderWidth: 2,
-    width: "100%",
-    height: "100%",
+    backgroundColor: "#007AFF",
+    elevation: 5, // Shadow for Android
+    shadowColor: "#000", // Shadow for iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    borderRadius: 25,
+    width: 50,
+    height: 50,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
   },
   buttonLabel: {
-    fontSize: 14,
+    color: "white",
+    fontSize: 28,
   },
 });
 

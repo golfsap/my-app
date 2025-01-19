@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet, Alert, Platform } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 
 import {
   Note,
@@ -10,6 +10,7 @@ import {
   deleteCommentById,
 } from "@/services/api";
 import DeleteButton from "@/components/DeleteButton";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CommentPage() {
   const router = useRouter();
@@ -63,10 +64,14 @@ export default function CommentPage() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <Stack.Screen
+        options={{
+          headerRight: () => <DeleteButton onPress={handleDeleteComment} />,
+        }}
+      />
       <Text style={styles.body}>{comment.body}</Text>
-      <DeleteButton onPress={handleDeleteComment}></DeleteButton>
-    </View>
+    </SafeAreaView>
   );
 }
 
