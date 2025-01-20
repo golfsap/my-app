@@ -7,6 +7,7 @@ import {
   Alert,
   Platform,
   SafeAreaView,
+  Switch,
 } from "react-native";
 import {
   Stack,
@@ -36,6 +37,7 @@ export default function NotePage() {
   const [note, setNote] = useState<Note | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const fetchNote = async () => {
     try {
@@ -99,17 +101,25 @@ export default function NotePage() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        { backgroundColor: isDarkMode ? "#1C1B20" : "#FFF" },
+      ]}
+    >
       <Stack.Screen
         options={{
           headerRight: () => <DeleteButton onPress={handleDeleteNote} />,
         }}
       />
-      <View style={styles.headerContainer}>
-        <Text style={styles.title}>{note.title}</Text>
-      </View>
+      <Switch
+        value={isDarkMode}
+        onValueChange={(value) => setIsDarkMode(value)}
+      />
+      <Text style={styles.title}>{note.title}</Text>
+
       <Text style={styles.body}>{note.body}</Text>
-      <Text style={styles.commentLabel}>Comments:</Text>
+      <Text style={styles.commentLabel}>Comments</Text>
       <FlatList
         data={comments}
         renderItem={({ item }) => (
@@ -151,26 +161,42 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
+    backgroundColor: "#1C1B20",
   },
-  headerContainer: {
-    display: "flex",
-    flexWrap: "wrap",
-    flexDirection: "row",
-    marginBottom: 6,
-    justifyContent: "space-between",
-  },
+  // headerContainer: {
+  //   display: "flex",
+  //   flexWrap: "wrap",
+  //   flexDirection: "column",
+  //   marginBottom: 6,
+  //   justifyContent: "space-between",
+  //   borderWidth: 1,
+  // },
   title: {
-    fontSize: 20,
+    width: "100%",
+    // borderWidth: 1,
+    fontSize: 27,
     fontWeight: "bold",
     marginBottom: 5,
+    color: "#f4f5fc",
+    paddingTop: 24,
+    paddingHorizontal: 15,
   },
   body: {
+    width: "100%",
+    // borderWidth: 1,
+    borderColor: "white",
     fontSize: 16,
-    marginBottom: 10,
+    marginBottom: 20,
+    color: "#f4f5fc",
+    paddingTop: 10,
+    paddingHorizontal: 15,
   },
   commentLabel: {
+    width: "100%",
     color: "#666",
+    paddingHorizontal: 15,
     marginBottom: 10,
+    fontSize: 16,
   },
   buttonContainer: {
     alignItems: "center",

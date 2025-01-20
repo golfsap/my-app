@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { useTheme } from "@/context/ThemeContext";
 
 interface Props {
   title: string;
@@ -7,30 +8,38 @@ interface Props {
 }
 
 const NoteItem = ({ title, body }: Props) => {
+  const { themeStyles } = useTheme();
+
+  const dynamicStyles = createDynamicStyles(themeStyles);
+
   return (
-    <View style={styles.noteContainer}>
-      <Text style={styles.noteTitle}>{title}</Text>
-      <Text style={styles.noteBody}>{body}</Text>
+    <View style={dynamicStyles.noteContainer}>
+      <Text style={dynamicStyles.noteTitle}>{title}</Text>
+      <Text style={dynamicStyles.noteBody}>{body}</Text>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  noteContainer: {
-    backgroundColor: "#fff",
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    width: "100%",
-  },
-  noteTitle: {
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  noteBody: {
-    fontSize: 12,
-    flexWrap: "wrap",
-  },
-});
+const createDynamicStyles = (themeStyles: any) =>
+  StyleSheet.create({
+    noteContainer: {
+      backgroundColor: themeStyles.backgroundMain,
+      padding: 15,
+      borderBottomWidth: 2,
+      borderBottomColor: themeStyles.backgroundSecond,
+      width: "100%",
+    },
+    noteTitle: {
+      fontSize: 16,
+      fontWeight: "bold",
+      color: themeStyles.textMain,
+      marginBottom: 5,
+    },
+    noteBody: {
+      fontSize: 13,
+      flexWrap: "wrap",
+      color: themeStyles.textSecond,
+    },
+  });
 
 export default NoteItem;

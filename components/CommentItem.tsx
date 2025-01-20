@@ -15,14 +15,16 @@ const CommentItem = ({ body }: Props) => {
 
 const styles = StyleSheet.create({
   commentContainer: {
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
     padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    // borderWidth: 1,
+    // borderBottomColor: "#ccc",
     width: "100%",
+    backgroundColor: "#252429",
   },
   comment: {
     fontSize: 14,
+    color: "#b4b2c0",
   },
 });
 

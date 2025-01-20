@@ -19,12 +19,16 @@ import {
 } from "@/services/api";
 import CreateButton from "@/components/CreateButton";
 import CreateModal from "@/components/CreateModal";
+import { useTheme } from "@/context/ThemeContext";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function HomePage() {
   const [user, setUser] = useState<Profile | null>(null);
   const [notes, setNotes] = useState<Note[]>([]);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const router = useRouter();
+  const { themeStyles } = useTheme();
+  const dynamicStyles = createDynamicStyles(themeStyles);
 
   useEffect(() => {
     handleGetUserProfile();
@@ -42,7 +46,7 @@ export default function HomePage() {
 
   const handleGetUserProfile = async () => {
     const userData = await getUserProfile();
-    console.log(userData);
+    // console.log(userData);
     setUser(userData);
   };
 
@@ -62,15 +66,21 @@ export default function HomePage() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={dynamicStyles.container}>
       <Stack.Screen
         options={{
-          title: "Hi, " + user?.name + " 👋",
-          headerRight: () => (
-            <Pressable onPress={handleLogout} style={styles.logoutButton}>
-              <Text style={styles.logoutButtonText}>Log out</Text>
+          title: user ? `Hi, ${user.name} 👋` : "Loading...",
+          headerLeft: () => (
+            <Pressable
+              onPress={handleLogout}
+              style={dynamicStyles.logoutButton}
+            >
+              <Text style={dynamicStyles.logoutButtonText}>Log out</Text>
             </Pressable>
           ),
+          headerRight: () => <ThemeToggle />,
+          headerStyle: { backgroundColor: themeStyles.backgroundMain },
+          headerTintColor: themeStyles.textMain,
         }}
       />
 
@@ -89,9 +99,9 @@ export default function HomePage() {
           </Link>
         )}
         keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.listContainer}
+        contentContainerStyle={dynamicStyles.listContainer}
       ></FlatList>
-      <View style={styles.buttonContainer}>
+      <View style={dynamicStyles.buttonContainer}>
         <CreateButton
           buttonLabel="note"
           onPress={() => setIsModalVisible(true)}
@@ -107,25 +117,27 @@ export default function HomePage() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  logoutButton: {
-    marginRight: 10,
-    padding: 5,
-  },
-  logoutButtonText: {
-    color: "#007AFF",
-    fontSize: 16,
-  },
-  listContainer: {
-    paddingBottom: 30,
-  },
-  buttonContainer: {
-    alignItems: "center",
-    // marginBottom: 20,
-  },
-});
+const createDynamicStyles = (themeStyles: any) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: themeStyles.backgroundMain,
+    },
+    logoutButton: {
+      marginRight: 10,
+      padding: 5,
+    },
+    logoutButtonText: {
+      color: themeStyles.buttonColor,
+      fontSize: 16,
+    },
+    listContainer: {
+      paddingBottom: 30,
+    },
+    buttonContainer: {
+      alignItems: "center",
+      // marginBottom: 20,
+    },
+  });
