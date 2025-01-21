@@ -1,16 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, Alert, Platform } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Alert,
+  Platform,
+  ScrollView,
+} from "react-native";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 
 import {
-  Note,
   Comment,
   getNoteById,
   getCommentById,
   deleteCommentById,
 } from "@/services/api";
 import DeleteButton from "@/components/DeleteButton";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function CommentPage() {
   const router = useRouter();
@@ -21,6 +27,11 @@ export default function CommentPage() {
   const comment_Id = parseInt(commentId, 10);
   // const [note, setNote] = useState<Note | null>(null);
   const [comment, setComment] = useState<Comment | null>(null);
+  const { themeStyles } = useTheme();
+
+  useEffect(() => {
+    fetchComment();
+  }, [commentId]);
 
   const fetchComment = async () => {
     try {
@@ -55,32 +66,52 @@ export default function CommentPage() {
     }
   };
 
-  useEffect(() => {
-    fetchComment();
-  }, [commentId]);
-
   if (!comment) {
     return <Text>Loading comment...</Text>;
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ScrollView
+      style={[
+        styles.container,
+        { backgroundColor: themeStyles.backgroundMain },
+      ]}
+    >
       <Stack.Screen
         options={{
           headerRight: () => <DeleteButton onPress={handleDeleteComment} />,
+          headerStyle: {
+            backgroundColor: themeStyles.backgroundMain,
+          },
+          headerTintColor: themeStyles.textMain,
         }}
       />
-      <Text style={styles.body}>{comment.body}</Text>
-    </SafeAreaView>
+      <Text
+        style={[
+          styles.body,
+          {
+            color: themeStyles.textMain,
+            backgroundColor: themeStyles.backgroundSecond,
+            borderColor: themeStyles.backgroundSecond,
+          },
+        ]}
+      >
+        {comment.body}
+      </Text>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 15,
   },
   body: {
+    fontSize: 14,
     marginBottom: 20,
+    borderWidth: 2,
+    padding: 10,
+    borderRadius: 10,
   },
 });
