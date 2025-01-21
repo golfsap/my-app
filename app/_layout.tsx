@@ -22,8 +22,6 @@ export default function RootLayout() {
           options={{
             title: "Note",
             headerBackTitle: "Home",
-            headerStyle: { backgroundColor: "#1C1B20" },
-            headerTintColor: "#F4F5FC",
           }}
         />
         <Stack.Screen

@@ -23,7 +23,7 @@ const lightTheme: ThemeStyles = {
   textMain: "#1f2937",
   textSecond: "#374151",
   buttonColor: "#007AFF",
-  highlightColor: "#c02e68",
+  highlightColor: "#FF0000",
 };
 
 const darkTheme: ThemeStyles = {

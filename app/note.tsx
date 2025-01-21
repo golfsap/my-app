@@ -7,7 +7,8 @@ import {
   Alert,
   Platform,
   SafeAreaView,
-  Switch,
+  Pressable,
+  ScrollView,
 } from "react-native";
 import {
   Stack,
@@ -29,6 +30,7 @@ import CommentItem from "@/components/CommentItem";
 import DeleteButton from "@/components/DeleteButton";
 import CreateButton from "@/components/CreateButton";
 import CreateModal from "@/components/CreateModal";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function NotePage() {
   const router = useRouter();
@@ -37,7 +39,16 @@ export default function NotePage() {
   const [note, setNote] = useState<Note | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { themeStyles } = useTheme();
+
+  useEffect(() => {
+    fetchNote();
+    fetchComments();
+  }, [id]);
+
+  useFocusEffect(() => {
+    fetchComments();
+  });
 
   const fetchNote = async () => {
     try {
@@ -87,63 +98,60 @@ export default function NotePage() {
     setIsModalVisible(false);
   };
 
-  useEffect(() => {
-    fetchNote();
-    fetchComments();
-  }, [id]);
-
-  useFocusEffect(() => {
-    fetchComments();
-  });
+  const renderCommentItem = ({ item }: { item: Comment }) => (
+    <Link
+      href={{
+        pathname: "/comment",
+        params: {
+          noteId: noteId,
+          commentId: item.id,
+        },
+      }}
+    >
+      <CommentItem body={item.body}></CommentItem>
+    </Link>
+  );
 
   if (!note) {
     return <Text>Loading note...</Text>;
   }
 
   return (
-    <SafeAreaView
-      style={[
-        styles.container,
-        { backgroundColor: isDarkMode ? "#1C1B20" : "#FFF" },
-      ]}
-    >
-      <Stack.Screen
-        options={{
-          headerRight: () => <DeleteButton onPress={handleDeleteNote} />,
-        }}
-      />
-      <Switch
-        value={isDarkMode}
-        onValueChange={(value) => setIsDarkMode(value)}
-      />
-      <Text style={styles.title}>{note.title}</Text>
+    <>
+      <ScrollView style={{ backgroundColor: themeStyles.backgroundMain }}>
+        <Stack.Screen
+          options={{
+            headerRight: () => <DeleteButton onPress={handleDeleteNote} />,
+            headerStyle: {
+              backgroundColor: themeStyles.backgroundMain,
+            },
+            headerTintColor: themeStyles.textMain,
+          }}
+        />
 
-      <Text style={styles.body}>{note.body}</Text>
-      <Text style={styles.commentLabel}>Comments</Text>
-      <FlatList
-        data={comments}
-        renderItem={({ item }) => (
-          <Link
-            href={{
-              pathname: "/comment",
-              params: {
-                noteId: noteId,
-                commentId: item.id,
-              },
-            }}
-          >
-            <CommentItem body={item.body}></CommentItem>
-          </Link>
-        )}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.listContainer}
-      ></FlatList>
+        <Text style={[styles.title, { color: themeStyles.textMain }]}>
+          {note.title}
+        </Text>
+
+        <Text style={[styles.body, { color: themeStyles.textSecond }]}>
+          {note.body}
+        </Text>
+        <Text style={[styles.commentLabel, { color: themeStyles.textMain }]}>
+          Comments
+        </Text>
+        <FlatList
+          data={comments}
+          renderItem={renderCommentItem}
+          keyExtractor={(item) => item.id.toString()}
+          scrollEnabled={false}
+          contentContainerStyle={styles.listContainer}
+        ></FlatList>
+      </ScrollView>
       <View style={styles.buttonContainer}>
         <CreateButton
           buttonLabel="comment"
           onPress={() => setIsModalVisible(true)}
         ></CreateButton>
-
         <CreateModal
           isVisible={isModalVisible}
           modalType="comment"
@@ -151,7 +159,7 @@ export default function NotePage() {
           onAdd={onAddComment}
         ></CreateModal>
       </View>
-    </SafeAreaView>
+    </>
   );
 }
 
@@ -163,46 +171,33 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#1C1B20",
   },
-  // headerContainer: {
-  //   display: "flex",
-  //   flexWrap: "wrap",
-  //   flexDirection: "column",
-  //   marginBottom: 6,
-  //   justifyContent: "space-between",
-  //   borderWidth: 1,
-  // },
   title: {
     width: "100%",
-    // borderWidth: 1,
     fontSize: 27,
     fontWeight: "bold",
     marginBottom: 5,
-    color: "#f4f5fc",
-    paddingTop: 24,
+    paddingTop: 15,
     paddingHorizontal: 15,
   },
   body: {
     width: "100%",
-    // borderWidth: 1,
-    borderColor: "white",
     fontSize: 16,
-    marginBottom: 20,
-    color: "#f4f5fc",
-    paddingTop: 10,
+    marginBottom: 15,
+    paddingTop: 7,
     paddingHorizontal: 15,
   },
   commentLabel: {
     width: "100%",
-    color: "#666",
     paddingHorizontal: 15,
     marginBottom: 10,
     fontSize: 16,
+    fontWeight: 500,
   },
   buttonContainer: {
     alignItems: "center",
     // marginBottom: 20,
   },
   listContainer: {
-    paddingBottom: 30,
+    paddingBottom: 50,
   },
 });

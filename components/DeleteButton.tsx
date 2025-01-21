@@ -1,11 +1,14 @@
 import React from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { Text, StyleSheet, Pressable } from "react-native";
+import { useTheme } from "@/context/ThemeContext";
 
 interface Props {
   onPress: () => void;
 }
 
 const DeleteButton = ({ onPress }: Props) => {
+  const { themeStyles } = useTheme();
+
   return (
     <Pressable style={styles.buttonContainer} onPress={onPress}>
       <Text style={styles.buttonLabel}>Delete</Text>

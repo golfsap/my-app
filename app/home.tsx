@@ -28,7 +28,6 @@ export default function HomePage() {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const router = useRouter();
   const { themeStyles } = useTheme();
-  const dynamicStyles = createDynamicStyles(themeStyles);
 
   useEffect(() => {
     handleGetUserProfile();
@@ -65,43 +64,56 @@ export default function HomePage() {
     handleGetUserNotes();
   };
 
-  return (
-    <SafeAreaView style={dynamicStyles.container}>
-      <Stack.Screen
-        options={{
-          title: user ? `Hi, ${user.name} 👋` : "Loading...",
-          headerLeft: () => (
-            <Pressable
-              onPress={handleLogout}
-              style={dynamicStyles.logoutButton}
-            >
-              <Text style={dynamicStyles.logoutButtonText}>Log out</Text>
-            </Pressable>
-          ),
-          headerRight: () => <ThemeToggle />,
-          headerStyle: { backgroundColor: themeStyles.backgroundMain },
-          headerTintColor: themeStyles.textMain,
-        }}
-      />
+  const renderNoteItem = ({ item }: { item: Note }) => (
+    <Link
+      href={{
+        pathname: "/note",
+        params: {
+          id: item.id,
+        },
+      }}
+    >
+      <NoteItem title={item.title} body={item.body}></NoteItem>
+    </Link>
+  );
 
-      <FlatList
-        data={notes}
-        renderItem={({ item }) => (
-          <Link
-            href={{
-              pathname: "/note",
-              params: {
-                id: item.id,
-              },
-            }}
-          >
-            <NoteItem title={item.title} body={item.body}></NoteItem>
-          </Link>
-        )}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={dynamicStyles.listContainer}
-      ></FlatList>
-      <View style={dynamicStyles.buttonContainer}>
+  return (
+    <>
+      <SafeAreaView
+        style={[
+          styles.container,
+          { backgroundColor: themeStyles.backgroundMain },
+        ]}
+      >
+        <Stack.Screen
+          options={{
+            title: user ? `Hi, ${user.name} 👋` : "Loading...",
+            headerLeft: () => (
+              <Pressable onPress={handleLogout} style={styles.logoutButton}>
+                <Text
+                  style={[
+                    styles.logoutButtonText,
+                    { color: themeStyles.buttonColor },
+                  ]}
+                >
+                  Log out
+                </Text>
+              </Pressable>
+            ),
+            headerRight: () => <ThemeToggle />,
+            headerStyle: { backgroundColor: themeStyles.backgroundMain },
+            headerTintColor: themeStyles.textMain,
+          }}
+        />
+
+        <FlatList
+          data={notes}
+          renderItem={renderNoteItem}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={styles.listContainer}
+        ></FlatList>
+      </SafeAreaView>
+      <View style={styles.buttonContainer}>
         <CreateButton
           buttonLabel="note"
           onPress={() => setIsModalVisible(true)}
@@ -113,31 +125,28 @@ export default function HomePage() {
           onAdd={onAddNote}
         ></CreateModal>
       </View>
-    </SafeAreaView>
+    </>
   );
 }
 
-const createDynamicStyles = (themeStyles: any) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: themeStyles.backgroundMain,
-    },
-    logoutButton: {
-      marginRight: 10,
-      padding: 5,
-    },
-    logoutButtonText: {
-      color: themeStyles.buttonColor,
-      fontSize: 16,
-    },
-    listContainer: {
-      paddingBottom: 30,
-    },
-    buttonContainer: {
-      alignItems: "center",
-      // marginBottom: 20,
-    },
-  });
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  logoutButton: {
+    // marginLeft: 10,
+    padding: 5,
+  },
+  logoutButtonText: {
+    fontSize: 16,
+  },
+  listContainer: {
+    paddingBottom: 30,
+  },
+  buttonContainer: {
+    alignItems: "center",
+    // marginBottom: 20,
+  },
+});
