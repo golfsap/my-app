@@ -24,7 +24,6 @@ export type Comment = {
 
 export const getUserProfile = async () => {
   const id_token = await getToken();
-  console.log("stored token:", id_token);
   const response = await fetch("https://ctsandbox.innohub.app/profile", {
     method: "GET",
     headers: {

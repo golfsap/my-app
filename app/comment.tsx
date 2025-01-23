@@ -91,7 +91,7 @@ export default function CommentPage() {
           styles.body,
           {
             color: themeStyles.textMain,
-            backgroundColor: themeStyles.backgroundSecond,
+            backgroundColor: themeStyles.backgroundMain,
             borderColor: themeStyles.backgroundSecond,
           },
         ]}

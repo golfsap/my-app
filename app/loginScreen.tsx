@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
-import { Link, useRouter, useFocusEffect } from "expo-router";
+import { SafeAreaView, Text, Pressable, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
 import { useAuth, storeToken } from "../services/auth";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
   const router = useRouter();
